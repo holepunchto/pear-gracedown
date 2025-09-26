@@ -7,7 +7,7 @@ const path = require('bare-path')
 const os = require('bare-os')
 os.chdir(__dirname)
 
-async function untilResult (pipe, opts = {}) {
+async function untilResult(pipe, opts = {}) {
   const timeout = opts.timeout || 10000
   const res = new Promise((resolve, reject) => {
     let buffer = ''
@@ -39,12 +39,12 @@ test('teardown default', { skip: !isBare || isWindows }, async function (t) {
   const argv = global.Bare.argv.slice(1)
   global.Bare.argv.length = 1
   global.Bare.argv.push('run', dir)
-  global.Pear = new class TestAPI {
+  global.Pear = new (class TestAPI {
     static RUNTIME = global.Bare.argv[0]
     static RUNTIME_ARGV = []
     static RTI = { checkout: {} }
     app = { applink: 'pear://pear' }
-  }()
+  })()
 
   t.teardown(() => {
     delete global.Pear
