@@ -1,8 +1,8 @@
 'use strict'
-
+const run = require('pear-run')
+global.Pear = {}
 const { test } = require('brittle')
 const { isWindows, isBare } = require('which-runtime')
-const run = require('pear-run')
 const path = require('bare-path')
 const os = require('bare-os')
 os.chdir(__dirname)
