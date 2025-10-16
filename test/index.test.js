@@ -1,6 +1,6 @@
 'use strict'
-const run = require('pear-run')
 global.Pear = {}
+const run = require('pear-run')
 const { test } = require('brittle')
 const { isWindows, isBare } = require('which-runtime')
 const path = require('bare-path')
@@ -34,7 +34,7 @@ async function untilResult(pipe, opts = {}) {
 
 test('teardown default', { skip: !isBare || isWindows }, async function (t) {
   t.plan(1)
-  const dir = path.join(__dirname, 'fixtures', 'gracedown')
+  const dir = path.join(__dirname, 'fixtures', 'gracedown', 'index.js')
 
   const argv = global.Bare.argv.slice(1)
   global.Bare.argv.length = 1
