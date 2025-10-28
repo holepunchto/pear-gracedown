@@ -5,7 +5,16 @@
   "type": "commonjs",
   "description": "Pear graceful closer",
   "license": "Apache-2.0",
-  "files": [],
+  "files": [
+    "bare/",
+    "node/"
+  ],
+  "imports": {
+    "#signals": {
+      "bare": "./bare/signals.js",
+      "default": "./node/signals.js"
+    }
+  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "prettier --check .",

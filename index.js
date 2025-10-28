@@ -1,37 +1,33 @@
 /* global Bare */
-const Signal = require('bare-signals')
+const signals = require('#signals')
 const safetyCatch = require('safety-catch')
-
+const program = global.Bare ? global.Bare : global.process
 const handlers = []
 
 let exiting = false
 
-const sigint = new Signal('SIGINT')
-const sigterm = new Signal('SIGTERM')
-
-sigint.on('signal', (signum) => {
-  sigint.stop()
-  sigint.unref()
-  Bare.exitCode = 130
+const sigint = (signum) => {
+  program.exitCode = 130
   onexit(() => {
-    Signal.send(signum, Bare.pid)
+    signals.kill(program.pid, signum)
   })
-})
+}
 
-sigterm.on('signal', (signum) => {
-  sigterm.stop()
-  sigterm.unref()
-  Bare.exitCode = 143
+const sigterm = (signum) => {
+  program.exitCode = 143
   onexit(() => {
-    Signal.send(signum, Bare.pid)
+    signals.kill(program.pid, signum)
   })
-})
+}
+
+signals.once('SIGINT', sigint)
+signals.once('SIGTERM', sigterm)
 
 function onexit(ondone) {
   if (exiting) return
   exiting = true
 
-  Bare.removeListener('beforeExit', onexit)
+  program.removeListener('beforeExit', onexit)
 
   const order = []
 
@@ -46,7 +42,7 @@ function onexit(ondone) {
   if (ondone) loopdown.finally(ondone)
 
   function loop() {
-    if (!order.length) return Promise.resolve()
+    if (!order.length) return
     return Promise.allSettled(order.pop().map(run)).then(loop, loop)
   }
 }
@@ -60,18 +56,13 @@ async function run(h) {
 }
 
 function setup() {
-  Bare.prependListener('beforeExit', onexit)
-  sigint.start()
-  sigterm.start()
-
-  sigint.unref()
-  sigterm.unref()
+  program.prependListener('beforeExit', onexit)
 }
 
 function cleanup() {
-  Bare.removeListener('beforeExit', onexit)
-  sigint.close()
-  sigterm.close()
+  program.removeListener('beforeExit', onexit)
+  signals.removeListener('SIGINT', sigint)
+  signals.removeListener('SIGTERM', sigterm)
 }
 
 function gracedown(fn, position = 0) {
