@@ -1,11 +1,15 @@
 'use strict'
 global.Pear = {}
+const { isWindows, isNode, isBare } = require('which-runtime')
+if (isNode) nodeSetup()
 const run = require('pear-run')
 const { test } = require('brittle')
-const { isWindows, isBare } = require('which-runtime')
-const path = require('bare-path')
-const os = require('bare-os')
-os.chdir(__dirname)
+const path = require('path')
+const os = require('os')
+const program = isBare ? global.Bare : global.process
+
+if (isBare) os.chdir(__dirname)
+else process.chdir(__dirname)
 
 async function untilResult(pipe, opts = {}) {
   const timeout = opts.timeout || 10000
@@ -32,15 +36,25 @@ async function untilResult(pipe, opts = {}) {
   return res
 }
 
-test('teardown default', { skip: !isBare || isWindows }, async function (t) {
+function nodeSetup() {
+  const cp = require('child_process')
+  const { spawn } = require('child_process')
+  cp.spawn = (...args) => {
+    const sp = spawn(...args)
+    sp.stdio[3].write('\u0000') // prevents pipe auto close in node
+    return sp
+  }
+}
+
+test('teardown default', { skip: isWindows }, async function (t) {
   t.plan(1)
   const dir = path.join(__dirname, 'fixtures', 'gracedown', 'index.js')
 
-  const argv = global.Bare.argv.slice(1)
-  global.Bare.argv.length = 1
-  global.Bare.argv.push('run', dir)
+  const argv = program.argv.slice(1)
+  program.argv.length = 1
+  program.argv.push('run', dir)
   global.Pear = new (class TestAPI {
-    static RUNTIME = global.Bare.argv[0]
+    static RUNTIME = program.argv[0]
     static RUNTIME_ARGV = []
     static RTI = { checkout: {} }
     app = { applink: 'pear://pear' }
@@ -48,10 +62,9 @@ test('teardown default', { skip: !isBare || isWindows }, async function (t) {
 
   t.teardown(() => {
     delete global.Pear
-    global.Bare.argv.length = 1
-    global.Bare.argv.push(...argv)
+    program.argv.length = 1
+    program.argv.push(...argv)
   })
-
   const pipe = run(dir)
 
   const td = await untilResult(pipe, { runFn: () => pipe.end() })

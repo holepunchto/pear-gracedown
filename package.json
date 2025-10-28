@@ -13,13 +13,21 @@
     "#signals": {
       "bare": "./bare/signals.js",
       "default": "./node/signals.js"
+    },
+    "path": {
+      "bare": "bare-path"
+    },
+    "os": {
+      "bare": "bare-os"
     }
   },
   "scripts": {
     "format": "prettier --write .",
     "lint": "prettier --check .",
     "test:gen": "brittle -r test/all.js test/*.test.js",
-    "test": "brittle-bare --coverage test/all.js"
+    "test": "npm run test:bare && npm run test:node",
+    "test:node": "brittle-node --coverage test/all.js",
+    "test:bare": "brittle-bare --coverage test/all.js"
   },
   "devDependencies": {
     "bare-path": "^3.0.0",
@@ -33,6 +41,7 @@
   "dependencies": {
     "bare-os": "^3.6.1",
     "bare-signals": "^4.0.3",
-    "safety-catch": "^1.0.2"
+    "safety-catch": "^1.0.2",
+    "url-file-url": "^1.0.5"
   }
 }

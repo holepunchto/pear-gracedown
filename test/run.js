@@ -1,2 +1,4 @@
 'use strict'
-require(global.Bare.argv[global.Bare.argv.length - 1])
+const program = global.Bare ? global.Bare : global.process
+const { fileURLToPath } = require('url-file-url')
+require(fileURLToPath(program.argv[program.argv.length - 1]))
