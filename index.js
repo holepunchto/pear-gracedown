@@ -20,8 +20,8 @@ const sigterm = (signum) => {
   })
 }
 
-signals.once('SIGINT', sigint)
-signals.once('SIGTERM', sigterm)
+signals.once('SIGINT', () => sigint('SIGINT'))
+signals.once('SIGTERM', () => sigterm('SIGTERM'))
 
 function onexit(ondone) {
   if (exiting) return
