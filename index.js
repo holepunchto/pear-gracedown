@@ -42,7 +42,7 @@ function onexit(ondone) {
   if (ondone) loopdown.finally(ondone)
 
   function loop() {
-    if (!order.length) return
+    if (!order.length) return Promise.resolve()
     return Promise.allSettled(order.pop().map(run)).then(loop, loop)
   }
 }
