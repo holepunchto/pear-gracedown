@@ -32,8 +32,9 @@ function onexit(ondone) {
   const order = []
 
   for (const h of handlers.sort((a, b) => b.position - a.position)) {
-    if (!order.length || order[order.length - 1][0].position !== h.position)
+    if (!order.length || order[order.length - 1][0].position !== h.position) {
       order.push([])
+    }
     order[order.length - 1].push(h)
   }
 
@@ -70,11 +71,13 @@ function gracedown(fn, position = 0) {
   const handler = { position, fn }
   handlers.push(handler)
 
-  return function unregister(unlisten = true) {
+  function unregister(unlisten = true) {
     const i = handlers.indexOf(handler)
     if (i > -1) handlers.splice(i, 1)
     if (unlisten && handlers.length === 0) cleanup()
   }
+
+  return unregister
 }
 
 module.exports = gracedown
