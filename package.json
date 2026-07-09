@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "bare-os": "^3.6.1",
-    "bare-signals": "^4.0.3",
+    "bare-signals": "^5.0.0",
     "safety-catch": "^1.0.2",
     "url-file-url": "^1.0.5"
   }
