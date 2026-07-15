@@ -44,5 +44,18 @@
     "bare-signals": "^5.0.0",
     "safety-catch": "^1.0.2",
     "url-file-url": "^1.0.5"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holepunchto/pear-gracedown.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/holepunchto/pear-gracedown/issues"
+  },
+  "homepage": "https://github.com/holepunchto/pear-gracedown#readme"
 }
