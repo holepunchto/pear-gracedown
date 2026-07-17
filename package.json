@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "bare-path": "^3.0.0",
+    "bare-subprocess": "^5.2.3",
     "brittle": "^3.0.0",
     "lunte": "^1.3.0",
     "pear-pipe": "^1.0.1",
