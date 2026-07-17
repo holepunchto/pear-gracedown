@@ -1,6 +1,6 @@
-const Signal = require('bare-signals')
+const os = require('bare-os')
 const SignalEmitter = require('bare-signals/emitter')
 const signals = new SignalEmitter()
 signals.unref()
-signals.kill = (pid, signum) => Signal.send(signum, pid)
+signals.kill = os.kill
 module.exports = signals
