@@ -13,7 +13,7 @@ if (isBare) os.chdir(__dirname)
 else process.chdir(__dirname)
 
 async function untilResult(pipe, opts = {}) {
-  const { timeout = 10000, runFn, writeStart = true } = opts
+  const { timeout = 10000, runFn, writeStart } = opts
   const res = new Promise((resolve, reject) => {
     let buffer = ''
     const timeoutId = setTimeout(() => reject(new Error('timed out')), timeout)
@@ -31,7 +31,7 @@ async function untilResult(pipe, opts = {}) {
   })
   if (opts.runFn) {
     await opts.runFn()
-  } else if (opts.hasWrite) {
+  } else if (writeStart === true) {
     pipe.write('start')
   }
   return res
@@ -68,7 +68,7 @@ test('teardown default', { skip: isWindows }, async function (t) {
   })
   const pipe = run(dir)
 
-  const td = await untilResult(pipe, { runFn: () => pipe.end() })
+  const td = await untilResult(pipe, { runFn: () => pipe.end(), writeStart: true })
   t.is(td, 'teardown', 'teardown executed')
 })
 
@@ -96,12 +96,12 @@ test('teardown on SIGTERM', { skip: isWindows }, async function (t) {
   })
 
   t.is(
-    await untilResult(child.stdout, { hasWrite: false }),
+    await untilResult(child.stdout),
     'ready',
     'child ready'
   )
 
-  const cleanup = untilResult(child.stdout, { hasWrite: false })
+  const cleanup = untilResult(child.stdout)
   child.kill('SIGTERM')
 
   const { code, signal } = await closed
