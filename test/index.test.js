@@ -29,8 +29,8 @@ async function untilResult(pipe, opts = {}) {
       reject(new Error('unexpected closed'))
     })
   })
-  if (opts.runFn) {
-    await opts.runFn()
+  if (runFn) {
+    await runFn()
   } else if (writeStart === true) {
     pipe.write('start')
   }
