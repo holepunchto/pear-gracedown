@@ -68,7 +68,10 @@ test('teardown default', { skip: isWindows }, async function (t) {
   })
   const pipe = run(dir)
 
-  const td = await untilResult(pipe, { runFn: () => pipe.end(), writeStart: true })
+  const td = await untilResult(pipe, {
+    runFn: () => pipe.end(),
+    writeStart: true
+  })
   t.is(td, 'teardown', 'teardown executed')
 })
 
@@ -95,11 +98,7 @@ test('teardown on SIGTERM', { skip: isWindows }, async function (t) {
     if (child.exitCode === null) child.kill()
   })
 
-  t.is(
-    await untilResult(child.stdout),
-    'ready',
-    'child ready'
-  )
+  t.is(await untilResult(child.stdout), 'ready', 'child ready')
 
   const cleanup = untilResult(child.stdout)
   child.kill('SIGTERM')
